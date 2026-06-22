@@ -7,5 +7,3 @@
 # Local configuration files
 .env
 
-# Heavy ML Models
-backend/models/*.pkl
