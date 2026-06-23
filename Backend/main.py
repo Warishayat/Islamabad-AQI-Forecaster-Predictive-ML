@@ -12,6 +12,7 @@ from app.core.engine import make_prediction
 from cron.weather_job import fetch_and_save_islamabad_data
 import xgboost as xgb
 from app.api import summary
+from app.api import predict
 
 warnings.filterwarnings("ignore", category=UserWarning)
 
@@ -26,7 +27,7 @@ MODEL_PATHS = {
 models = {}
 
 def load_all_models():
-    print("Loading models into memory...")
+    print("🛰️ Loading models into memory...")
     for horizon, path in MODEL_PATHS.items():
         if os.path.exists(path):
             try:
@@ -47,6 +48,7 @@ def load_all_models():
 async def lifespan(app: FastAPI):
     Base.metadata.create_all(bind=engine)
     load_all_models()
+    app.state.models = models
     yield
 
 app = FastAPI(title="Islamabad Weather Forecaster", lifespan=lifespan, version="0.01")
@@ -61,7 +63,7 @@ app.add_middleware(
 
 @app.get("/")
 def home():
-    return {"message": "API is working"}
+    return {"message": "API is working smoothly"}
 
 @app.get("/api/v1/fetch-live-data")
 def trigger_live_fetch():
@@ -70,16 +72,5 @@ def trigger_live_fetch():
         raise HTTPException(status_code=500, detail="Failed to fetch data from Open-Meteo")
     return {"status": "success", "message": "Real-time Islamabad data saved to PostgreSQL."}
 
-@app.post("/api/v1/predict-all")
-def predict_aqi(current_reading: dict, db: Session = Depends(get_db)):
-    try:
-        input_features = get_engineered_features(current_reading, db)
-        predictions = make_prediction(input_features, models)
-        return {
-            "status": "success",
-            "predictions": predictions
-        }
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-    
 app.include_router(summary.router, prefix="/api/v1", tags=["AI Summary"])
+app.include_router(predict.router)

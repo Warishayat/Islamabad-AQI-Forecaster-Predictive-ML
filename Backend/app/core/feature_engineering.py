@@ -52,4 +52,4 @@ def get_engineered_features(current_reading: dict, db: Session):
         float(latest['pm2_5_std_24h'])
     ]
     
-    return features_sequence
+    return [float(x) for x in features_sequence]
