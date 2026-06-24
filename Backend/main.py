@@ -10,7 +10,6 @@ from config.database import engine, Base, get_db
 from app.core.feature_engineering import get_engineered_features
 from app.core.engine import make_prediction
 from cron.weather_job import fetch_and_save_islamabad_data
-import xgboost as xgb
 from app.api import summary
 from app.api import predict
 
@@ -21,24 +20,17 @@ MODEL_PATHS = {
     "6h": "models/random_forest_6hrsaqi_forecaster.pkl",
     "12h": "models/random_forest_12hrsaqi_forecaster.pkl",
     "24h": "models/random_forest_24hrsaqi_forecaster.pkl",
-    "xgb": "models/xgboost_aqi_model.json"
 }
 
 models = {}
 
 def load_all_models():
-    print("🛰️ Loading models into memory...")
+    print("Loading models into memory...")
     for horizon, path in MODEL_PATHS.items():
         if os.path.exists(path):
             try:
-                if horizon == "xgb":
-                    bst = xgb.XGBRegressor()
-                    bst.load_model(path)
-                    models[horizon] = bst
-                    print(f"{horizon} model loaded natively from JSON")
-                else:
-                    models[horizon] = joblib.load(path)
-                    print(f"{horizon} model loaded")
+                models[horizon] = joblib.load(path)
+                print(f"{horizon} model loaded")
             except Exception as e:
                 print(f"Failed loading {horizon}: {e}")
         else:

@@ -18,13 +18,4 @@ def make_prediction(input_features, models):
         else:
             results[f"error_{interval}"] = "Model not found in memory"
             
-    if "xgb" in models:
-        try:
-            pred_xgb = models["xgb"].predict(final_features)
-            results["forecast_xgb"] = round(float(pred_xgb[0]), 2)
-        except Exception as e:
-            results["error_xgb"] = f"Inference Error: {str(e)}"
-    else:
-        results["error_xgb"] = "XGBoost model not found in memory"
-        
     return results
