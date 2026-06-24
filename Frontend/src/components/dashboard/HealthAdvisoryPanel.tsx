@@ -1,23 +1,32 @@
 import { Card, CardContent } from "@/components/ui/Card";
-import { Sparkles, AlertTriangle, Info } from "lucide-react";
+import { Sparkles, AlertTriangle } from "lucide-react";
 import { ApiResponse } from "@/types/dashboard";
 
 interface HealthAdvisoryPanelProps {
   data: ApiResponse;
 }
 
-export function HealthAdvisoryPanel({ data }: HealthAdvisoryPanelProps) {
-  // Simple heuristic for the advisory text based on mock data insights
-  const peakAqi = Math.max(
-    data.current_data.pm2_5,
-    data.predictions.forecast_3h,
-    data.predictions.forecast_6h,
-    data.predictions.forecast_12h,
-    data.predictions.forecast_24h
-  );
-
+export async function HealthAdvisoryPanel({ data }: HealthAdvisoryPanelProps) {
   const isHighTemp = data.current_data.temperature > 35;
-  const isHighPollution = peakAqi > 50;
+  
+  let summaryText = "Analyzing real-time meteorological conditions...";
+  
+  try {
+    const res = await fetch("http://127.0.0.1:8000/api/v1/generate-summary", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data.predictions),
+      cache: "no-store"
+    });
+    
+    if (res.ok) {
+      const json = await res.json();
+      summaryText = json.summary;
+    }
+  } catch (error) {
+    console.error("Failed to generate AI summary", error);
+    summaryText = "Failed to communicate with AI Summary service. Displaying fallback data.";
+  }
 
   return (
     <Card className="border-indigo-500/50 bg-gradient-to-br from-indigo-950/40 via-[#0a0f1c] to-black mt-6 relative overflow-hidden shadow-[0_0_40px_rgba(99,102,241,0.15)] group">
@@ -35,12 +44,7 @@ export function HealthAdvisoryPanel({ data }: HealthAdvisoryPanelProps) {
             AI Health & Context Advisory
           </h4>
           <p className="text-slate-300 leading-relaxed text-sm md:text-base font-medium">
-            Air quality is expected to peak at <strong className="text-white bg-white/10 px-1.5 py-0.5 rounded">{peakAqi.toFixed(1)}</strong> PM2.5 in the coming hours. 
-            {isHighTemp && isHighPollution ? (
-              <span className="text-rose-200"> Sensitive groups should avoid extended outdoor activities around <span className="text-white">{data.city}</span> during high-temperature windows, as <span className="text-rose-300 font-bold">{data.current_data.temperature}°C</span> heat exacerbates pollution effects.</span>
-            ) : (
-              <span> Conditions are generally stable, but standard precautions are advised for sensitive individuals in <span className="text-white">{data.city}</span>.</span>
-            )}
+            {summaryText}
           </p>
         </div>
 

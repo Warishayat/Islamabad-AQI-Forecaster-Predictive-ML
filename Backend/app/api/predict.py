@@ -47,11 +47,12 @@ def predict_islamabad_aqi(request: Request, db: Session = Depends(get_db)):
         return {
             "status": "success",
             "city": "Islamabad",
-            "timestamp": latest_record.time,
+            "timestamp": latest_record.time.isoformat() + "Z",
             "current_data": {
                 "temperature": current_reading["temperature_2m"],
                 "humidity": current_reading["relative_humidity_2m"],
                 "pm2_5": current_reading["pm2_5"],
+                "aqi": float(latest_record.european_aqi) if latest_record.european_aqi is not None else 0.0,
                 "pm10": current_reading["pm10"],
                 "wind_speed": current_reading["wind_speed_10m"],
                 "pressure": current_reading["pressure_msl"],

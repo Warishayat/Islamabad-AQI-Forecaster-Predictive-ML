@@ -2,6 +2,7 @@ export interface CurrentData {
   temperature: number;
   humidity: number;
   pm2_5: number;
+  aqi: number;
   pm10: number;
   wind_speed: number;
   pressure: number;

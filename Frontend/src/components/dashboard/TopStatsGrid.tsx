@@ -25,7 +25,7 @@ export function TopStatsGrid({ data }: TopStatsGridProps) {
         <CardHeader className="relative z-10 pb-0">
           <CardTitle className="text-sm font-semibold tracking-wider text-slate-300 uppercase flex items-center gap-2">
             <Activity className="w-5 h-5 text-slate-400" />
-            PM2.5
+            Current AQI
           </CardTitle>
         </CardHeader>
         
@@ -33,7 +33,7 @@ export function TopStatsGrid({ data }: TopStatsGridProps) {
           <div className="flex items-end justify-between">
             <div>
               <div className="text-7xl font-black tracking-tighter text-white mb-3">
-                {data.pm2_5.toFixed(1)}
+                {Math.round(data.aqi)}
               </div>
               <span className={`inline-flex items-center px-4 py-1.5 rounded-full text-sm font-bold tracking-wide border ${aqi.color} ${aqi.bg} ${aqi.border}`}>
                 {aqi.label}

@@ -1,9 +1,11 @@
+import { Suspense } from "react";
 import { ApiResponse } from "@/types/dashboard";
 import { TopStatsGrid } from "./TopStatsGrid";
 import { ForecastGraph } from "./ForecastGraph";
 import { PredictionsTimeline } from "./PredictionsTimeline";
 import { HealthAdvisoryPanel } from "./HealthAdvisoryPanel";
-import { MapPin, CalendarClock } from "lucide-react";
+import { MapPin, CalendarClock, Loader2 } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/Card";
 
 interface DashboardProps {
   data: ApiResponse;
@@ -47,7 +49,12 @@ export function Dashboard({ data }: DashboardProps) {
           </div>
         </header>
 
-        {/* Predictions Timeline Grid (Moved above Graph) */}
+        {/* Top Metrics Bento Grid (Live Data & AI Prediction) */}
+        <section className="relative z-10">
+          <TopStatsGrid data={data.current_data} />
+        </section>
+
+        {/* Predictions Timeline Grid */}
         <section>
           <h2 className="text-xl font-bold text-white mb-4 tracking-tight">Predictions Timeline</h2>
           <PredictionsTimeline currentAqi={data.current_data.pm2_5} predictions={data.predictions} />
@@ -58,15 +65,18 @@ export function Dashboard({ data }: DashboardProps) {
           <ForecastGraph data={data} />
         </section>
 
-        {/* Top Metrics Bento Grid (Live Data - Moved below Graph) */}
-        <section className="relative z-10">
-          <h2 className="text-xl font-bold text-white mb-4 tracking-tight">Current Live Data</h2>
-          <TopStatsGrid data={data.current_data} />
-        </section>
-
         {/* AI Advisory Panel */}
         <section>
-          <HealthAdvisoryPanel data={data} />
+          <Suspense fallback={
+            <Card className="border-indigo-500/50 bg-gradient-to-br from-indigo-950/40 to-black mt-6">
+              <CardContent className="p-6 md:p-8 flex items-center justify-center gap-3">
+                <Loader2 className="w-6 h-6 text-indigo-400 animate-spin" />
+                <span className="text-indigo-300 font-medium">Generating Groq AI Summary...</span>
+              </CardContent>
+            </Card>
+          }>
+            <HealthAdvisoryPanel data={data} />
+          </Suspense>
         </section>
 
       </div>

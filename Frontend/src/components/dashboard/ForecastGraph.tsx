@@ -14,7 +14,7 @@ export function ForecastGraph({ data }: ForecastGraphProps) {
     return [
       {
         time: "Current",
-        aqi: data.current_data.pm2_5,
+        aqi: data.current_data.aqi,
       },
       {
         time: "3 Hours",
@@ -43,7 +43,7 @@ export function ForecastGraph({ data }: ForecastGraphProps) {
     <Card className="col-span-full overflow-hidden relative group">
       <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/5 via-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
       <CardHeader className="relative z-10">
-        <CardTitle className="text-sm font-semibold tracking-wider text-slate-300 uppercase">AQI Forecast Trend (PM2.5)</CardTitle>
+        <CardTitle className="text-sm font-semibold tracking-wider text-slate-300 uppercase">AQI Forecast Trend</CardTitle>
       </CardHeader>
       <CardContent className="relative z-10">
         <div className="h-[320px] w-full mt-2">
@@ -85,7 +85,7 @@ export function ForecastGraph({ data }: ForecastGraphProps) {
               <Area 
                 type="monotone" 
                 dataKey="aqi" 
-                name="AQI (PM2.5)"
+                name="AQI"
                 stroke={gradientColor} 
                 strokeWidth={4}
                 fillOpacity={1} 
