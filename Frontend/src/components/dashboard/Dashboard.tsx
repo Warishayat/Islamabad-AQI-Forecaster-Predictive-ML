@@ -56,7 +56,7 @@ export function Dashboard({ data }: DashboardProps) {
 
         {/* Predictions Timeline Grid */}
         <section>
-          <h2 className="text-xl font-bold text-white mb-4 tracking-tight">Predictions Timeline</h2>
+          <h2 className="text-xl font-bold text-white mb-4 tracking-tight">Air Quality in the Coming Hours</h2>
           <PredictionsTimeline currentAqi={data.current_data.pm2_5} predictions={data.predictions} />
         </section>
 
