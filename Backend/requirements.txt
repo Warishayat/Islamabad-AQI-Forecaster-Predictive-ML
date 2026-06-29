@@ -7,3 +7,7 @@ sqlalchemy
 psycopg2-binary
 dotenv
 pandas
+requests
+langchain_groq
+langchain
+langchain_community
