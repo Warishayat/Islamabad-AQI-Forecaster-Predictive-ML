@@ -67,16 +67,7 @@ export function Dashboard({ data }: DashboardProps) {
 
         {/* AI Advisory Panel */}
         <section>
-          <Suspense fallback={
-            <Card className="border-indigo-500/50 bg-gradient-to-br from-indigo-950/40 to-black mt-6">
-              <CardContent className="p-6 md:p-8 flex items-center justify-center gap-3">
-                <Loader2 className="w-6 h-6 text-indigo-400 animate-spin" />
-                <span className="text-indigo-300 font-medium">Generating Groq AI Summary...</span>
-              </CardContent>
-            </Card>
-          }>
-            <HealthAdvisoryPanel data={data} />
-          </Suspense>
+          <HealthAdvisoryPanel data={data} />
         </section>
 
       </div>

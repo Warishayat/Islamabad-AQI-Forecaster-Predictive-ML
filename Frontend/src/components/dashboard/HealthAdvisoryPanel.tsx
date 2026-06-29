@@ -1,32 +1,44 @@
+import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/Card";
-import { Sparkles, AlertTriangle } from "lucide-react";
+import { Sparkles, AlertTriangle, Loader2 } from "lucide-react";
 import { ApiResponse } from "@/types/dashboard";
 
 interface HealthAdvisoryPanelProps {
   data: ApiResponse;
 }
 
-export async function HealthAdvisoryPanel({ data }: HealthAdvisoryPanelProps) {
+export function HealthAdvisoryPanel({ data }: HealthAdvisoryPanelProps) {
   const isHighTemp = data.current_data.temperature > 35;
   
-  let summaryText = "Analyzing real-time meteorological conditions...";
-  
-  try {
-    const res = await fetch("https://slamabad-aqi-forecaster.onrender.com/api/v1/generate-summary", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data.predictions),
-      cache: "no-store"
-    });
-    
-    if (res.ok) {
-      const json = await res.json();
-      summaryText = json.summary;
+  const [summaryText, setSummaryText] = useState("Analyzing real-time meteorological conditions...");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchSummary() {
+      try {
+        const res = await fetch("https://slamabad-aqi-forecaster.onrender.com/api/v1/generate-summary", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data.predictions),
+          cache: "no-store"
+        });
+        
+        if (res.ok) {
+          const json = await res.json();
+          setSummaryText(json.summary);
+        } else {
+          setSummaryText("Failed to communicate with AI Summary service. Displaying fallback data.");
+        }
+      } catch (error) {
+        console.error("Failed to generate AI summary", error);
+        setSummaryText("Failed to communicate with AI Summary service. Displaying fallback data.");
+      } finally {
+        setLoading(false);
+      }
     }
-  } catch (error) {
-    console.error("Failed to generate AI summary", error);
-    summaryText = "Failed to communicate with AI Summary service. Displaying fallback data.";
-  }
+
+    fetchSummary();
+  }, [data.predictions]);
 
   return (
     <Card className="border-indigo-500/50 bg-gradient-to-br from-indigo-950/40 via-[#0a0f1c] to-black mt-6 relative overflow-hidden shadow-[0_0_40px_rgba(99,102,241,0.15)] group">
@@ -36,12 +48,17 @@ export async function HealthAdvisoryPanel({ data }: HealthAdvisoryPanelProps) {
       
       <CardContent className="p-6 md:p-8 relative z-10 flex flex-col md:flex-row gap-6 items-start">
         <div className="bg-indigo-500/10 p-3.5 rounded-xl border border-indigo-500/30 shrink-0 shadow-[0_0_15px_rgba(99,102,241,0.2)]">
-          <Sparkles className="w-6 h-6 text-indigo-300 animate-pulse" />
+          {loading ? (
+            <Loader2 className="w-6 h-6 text-indigo-400 animate-spin" />
+          ) : (
+            <Sparkles className="w-6 h-6 text-indigo-300 animate-pulse" />
+          )}
         </div>
         
         <div className="space-y-3 flex-1">
           <h4 className="text-xs font-bold text-indigo-300 tracking-widest uppercase flex items-center gap-2">
             AI Health & Context Advisory
+            {loading && <span className="text-indigo-400/50 normal-case tracking-normal">(Generating Groq AI Summary...)</span>}
           </h4>
           <p className="text-slate-300 leading-relaxed text-sm md:text-base font-medium">
             {summaryText}
