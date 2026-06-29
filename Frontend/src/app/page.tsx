@@ -5,7 +5,7 @@ import { ApiResponse } from "@/types/dashboard";
 async function getAqiData(): Promise<ApiResponse> {
   // Fetch live data from the FastAPI backend running locally
   // We use cache: 'no-store' to ensure we always get the freshest predictions
-  const res = await fetch("http://127.0.0.1:8000/api/v1/predict-all", {
+  const res = await fetch("https://slamabad-aqi-forecaster.onrender.com/api/v1/predict-all", {
     cache: "no-store",
   });
   
