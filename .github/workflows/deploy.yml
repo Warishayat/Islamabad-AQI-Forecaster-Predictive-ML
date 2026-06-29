@@ -28,3 +28,9 @@ jobs:
         run: |
           pip install flake8
           flake8 Backend/ --count --exit-zero --max-line-length=127 --statistics
+
+
+      - name: Trigger Render Deployment
+        if: success() 
+        run: |
+          curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK }}"

@@ -1,9 +1,9 @@
-import pandas as pd
-import numpy as np
 from sqlalchemy.orm import Session
 from app.core.models import AQIReading
 
 def get_engineered_features(current_reading: dict, db: Session):
+    # Lazy imports to save memory at startup
+    import pandas as pd
     history = db.query(AQIReading).order_by(AQIReading.time.desc()).limit(24).all()
     if not history:
         history_df = pd.DataFrame([current_reading])

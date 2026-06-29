@@ -1,4 +1,3 @@
-import numpy as np
 from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from config.database import get_db
@@ -16,11 +15,6 @@ router = APIRouter(prefix="/api/v1", tags=["AQI Forecasting"])
 @router.get("/predict-all")
 def predict_islamabad_aqi(request: Request, db: Session = Depends(get_db)):
     try:
-        models = request.app.state.models if hasattr(request.app.state, "models") else {}
-        
-        if not models:
-            raise HTTPException(status_code=500, detail="ML Models memory mein loaded nahi hain.")
-
         latest_record = db.query(AQIReading).order_by(AQIReading.time.desc()).first()
         if not latest_record:
             raise HTTPException(status_code=404, detail="Neon Database mein koi data point nahi mila.")
@@ -40,9 +34,9 @@ def predict_islamabad_aqi(request: Request, db: Session = Depends(get_db)):
         }
         
         features_sequence = get_engineered_features(current_reading, db)
-        input_features = np.array(features_sequence).flatten().reshape(1, -1)
         
-        predictions = make_prediction(input_features, models)
+        # Models are now lazy-loaded inside the engine
+        predictions = make_prediction(features_sequence)
     
         return {
             "status": "success",
