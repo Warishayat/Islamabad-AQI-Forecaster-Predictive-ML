@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 interface AutoRefreshProps {
-  intervalMs?: number; // Default to 1.5 hours
+  intervalMs?: number; 
 }
 
 export function AutoRefresh({ intervalMs = 90 * 60 * 1000 }: AutoRefreshProps) {
