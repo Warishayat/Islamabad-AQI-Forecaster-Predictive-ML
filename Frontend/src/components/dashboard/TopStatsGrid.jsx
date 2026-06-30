@@ -1,14 +1,9 @@
-import { CurrentData } from "@/types/dashboard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Thermometer, Droplets, Wind, Gauge, Activity } from "lucide-react";
 
-interface TopStatsGridProps {
-  data: CurrentData;
-}
-
-export function TopStatsGrid({ data }: TopStatsGridProps) {
+export function TopStatsGrid({ data }) {
   // Determine AQI status and color based on PM2.5 (simplified logic)
-  const getAqiStatus = (pm25: number) => {
+  const getAqiStatus = (pm25) => {
     if (pm25 <= 12) return { label: "Good", color: "text-emerald-400", bg: "bg-emerald-400/10", border: "border-emerald-400/20", shadow: "shadow-[0_0_20px_rgba(16,185,129,0.2)]" };
     if (pm25 <= 35.4) return { label: "Moderate", color: "text-amber-400", bg: "bg-amber-400/10", border: "border-amber-400/20", shadow: "shadow-[0_0_20px_rgba(251,191,36,0.2)]" };
     return { label: "Unhealthy", color: "text-rose-400", bg: "bg-rose-400/10", border: "border-rose-400/20", shadow: "shadow-[0_0_20px_rgba(244,63,94,0.2)]" };

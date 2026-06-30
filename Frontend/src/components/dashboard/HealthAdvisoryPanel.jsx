@@ -1,13 +1,8 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/Card";
 import { Sparkles, AlertTriangle, Loader2 } from "lucide-react";
-import { ApiResponse } from "@/types/dashboard";
 
-interface HealthAdvisoryPanelProps {
-  data: ApiResponse;
-}
-
-export function HealthAdvisoryPanel({ data }: HealthAdvisoryPanelProps) {
+export function HealthAdvisoryPanel({ data }) {
   const isHighTemp = data.current_data.temperature > 35;
   
   const [summaryText, setSummaryText] = useState("Analyzing real-time meteorological conditions...");

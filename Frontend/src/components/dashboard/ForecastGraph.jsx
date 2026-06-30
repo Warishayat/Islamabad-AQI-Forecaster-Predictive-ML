@@ -3,13 +3,8 @@
 import { useMemo } from "react";
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { ApiResponse } from "@/types/dashboard";
 
-interface ForecastGraphProps {
-  data: ApiResponse;
-}
-
-export function ForecastGraph({ data }: ForecastGraphProps) {
+export function ForecastGraph({ data }) {
   const chartData = useMemo(() => {
     return [
       {

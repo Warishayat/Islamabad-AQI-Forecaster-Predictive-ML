@@ -1,13 +1,7 @@
-import { Predictions } from "@/types/dashboard";
 import { Card, CardContent } from "@/components/ui/Card";
 import { Clock, TrendingUp, TrendingDown, Minus } from "lucide-react";
 
-interface PredictionsTimelineProps {
-  currentAqi: number;
-  predictions: Predictions;
-}
-
-export function PredictionsTimeline({ currentAqi, predictions }: PredictionsTimelineProps) {
+export function PredictionsTimeline({ currentAqi, predictions }) {
   const steps = [
     { label: "+3 Hours Later", value: predictions.forecast_3h, note: "(Peak)" },
     { label: "+6 Hours Later", value: predictions.forecast_6h, note: "" },

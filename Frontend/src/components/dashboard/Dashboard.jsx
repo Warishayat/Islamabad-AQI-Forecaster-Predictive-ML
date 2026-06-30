@@ -1,17 +1,10 @@
-import { Suspense } from "react";
-import { ApiResponse } from "@/types/dashboard";
 import { TopStatsGrid } from "./TopStatsGrid";
 import { ForecastGraph } from "./ForecastGraph";
 import { PredictionsTimeline } from "./PredictionsTimeline";
 import { HealthAdvisoryPanel } from "./HealthAdvisoryPanel";
-import { MapPin, CalendarClock, Loader2 } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/Card";
+import { MapPin, CalendarClock } from "lucide-react";
 
-interface DashboardProps {
-  data: ApiResponse;
-}
-
-export function Dashboard({ data }: DashboardProps) {
+export function Dashboard({ data }) {
   const formattedDate = new Date(data.timestamp).toLocaleString("en-US", {
     weekday: "long",
     year: "numeric",
